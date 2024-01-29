@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 EPAM Systems.
+ * Copyright 2023 EPAM Systems.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,15 @@
 
 package com.epam.digital.data.platform.starter.database.config;
 
+import com.epam.digital.data.platform.starter.database.deserializer.DateTimeDeserializer;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.util.StdDateFormat;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
 import java.sql.Date;
 import java.sql.Time;
 import java.sql.Timestamp;
@@ -30,10 +33,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import javax.sql.DataSource;
-
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalTimeDeserializer;
 import org.jooq.Converter;
 import org.jooq.ConverterProvider;
 import org.jooq.DSLContext;
@@ -113,7 +112,7 @@ public class JooqConfig {
     mapper.setPropertyNamingStrategy(PropertyNamingStrategies.SNAKE_CASE);
     mapper.setDateFormat((new StdDateFormat()).withColonInTimeZone(true));
     JavaTimeModule module = new JavaTimeModule();
-    module.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
+    module.addDeserializer(LocalDateTime.class, new DateTimeDeserializer());
     module.addDeserializer(LocalTime.class, new LocalTimeDeserializer(DateTimeFormatter.ISO_LOCAL_TIME));
     module.addDeserializer(LocalDate.class, new LocalDateDeserializer(DateTimeFormatter.ISO_LOCAL_DATE));
     mapper.registerModule(module);
